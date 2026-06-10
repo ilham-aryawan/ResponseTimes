@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Replywise helps you understand how quickly the people you message get back to you."
+    />
+    <title>Replywise — Response time insights</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <a class="brand" href="#" aria-label="Replywise home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" role="img">
+              <path d="M5.5 5.5h13v9h-7l-4.75 4v-4H5.5z" />
+              <path d="M9 9.25h6M9 12h3.5" />
+            </svg>
+          </span>
+          <span>Replywise</span>
+        </a>
+
+        <nav class="top-nav" aria-label="Primary navigation">
+          <a class="active" href="#dashboard">Dashboard</a>
+          <a href="#contacts">Contacts</a>
+          <a href="#activity">Activity</a>
+        </nav>
+
+        <div class="header-actions">
+          <button class="icon-button" type="button" aria-label="Notifications" id="notificationButton">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
+              <path d="M10 20h4" />
+            </svg>
+            <span class="notification-dot"></span>
+          </button>
+          <button class="profile-button" type="button" id="profileButton" aria-label="Open profile menu">
+            <span class="avatar avatar-photo avatar-sam" aria-hidden="true">SA</span>
+            <span class="profile-copy">
+              <strong>Sam Avery</strong>
+              <small>Personal</small>
+            </span>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="m6 8 4 4 4-4" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main id="dashboard">
+        <section class="hero">
+          <div class="eyebrow">YOUR COMMUNICATION, MADE CLEAR</div>
+          <div class="hero-row">
+            <div>
+              <h1>Know when they’ll <em>reply.</em></h1>
+              <p>
+                Understand the rhythm of your conversations, spot your most responsive
+                relationships, and message at better moments.
+              </p>
+            </div>
+            <button class="primary-button" type="button" id="openImport">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
+              </svg>
+              Import messages
+            </button>
+          </div>
+        </section>
+
+        <section class="stats-grid" aria-label="Summary statistics">
+          <article class="stat-card stat-card-featured">
+            <div class="stat-topline">
+              <span class="stat-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="8" />
+                  <path d="M12 7v5l3 2" />
+                </svg>
+              </span>
+              <span class="trend trend-good">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 10 4-4 3 3 3-4" /></svg>
+                18%
+              </span>
+            </div>
+            <p>Median response time</p>
+            <h2 id="medianStat">24 <span>min</span></h2>
+            <small>12 minutes faster than last month</small>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-topline">
+              <span class="stat-icon stat-icon-coral">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M21 15a4 4 0 0 1-4 4H8l-5 3v-7a4 4 0 0 1-1-2.5V7a4 4 0 0 1 4-4h11a4 4 0 0 1 4 4z" />
+                </svg>
+              </span>
+              <span class="trend">This month</span>
+            </div>
+            <p>Conversations analyzed</p>
+            <h2 id="conversationStat">1,284</h2>
+            <small>Across 42 active contacts</small>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-topline">
+              <span class="stat-icon stat-icon-gold">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3 9.25 8.5 3 9.4l4.5 4.4-1.06 6.2L12 17.1l5.56 2.9-1.06-6.2L21 9.4l-6.25-.9z" />
+                </svg>
+              </span>
+              <span class="trend trend-good">Top 5%</span>
+            </div>
+            <p>Fastest replier</p>
+            <div class="person-stat">
+              <span class="avatar avatar-maya">MC</span>
+              <div>
+                <h2>Maya</h2>
+                <small>4 min median reply</small>
+              </div>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-topline">
+              <span class="stat-icon stat-icon-lilac">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 2v20M2 12h20" />
+                  <path d="M5 5l14 14M19 5 5 19" />
+                </svg>
+              </span>
+              <span class="trend">Based on history</span>
+            </div>
+            <p>Best time to message</p>
+            <h2>6:30 <span>PM</span></h2>
+            <small>Replies are 31% quicker in the evening</small>
+          </article>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel chart-panel" id="activity">
+            <div class="panel-header">
+              <div>
+                <span class="section-kicker">RESPONSE PATTERNS</span>
+                <h2>When replies happen</h2>
+                <p>Median time between your message and their response.</p>
+              </div>
+              <div class="segmented-control" aria-label="Chart period" id="periodControl">
+                <button type="button" data-period="7" aria-pressed="false">7D</button>
+                <button class="active" type="button" data-period="30" aria-pressed="true">30D</button>
+                <button type="button" data-period="90" aria-pressed="false">3M</button>
+              </div>
+            </div>
+
+            <div class="chart-summary">
+              <div>
+                <strong id="chartMedian">24 min</strong>
+                <span>median response</span>
+              </div>
+              <div class="legend">
+                <span><i class="legend-mark legend-primary"></i> Response time</span>
+                <span><i class="legend-mark legend-baseline"></i> Previous period</span>
+              </div>
+            </div>
+
+            <div class="chart-wrap">
+              <div class="y-axis" aria-hidden="true">
+                <span>60m</span>
+                <span>45m</span>
+                <span>30m</span>
+                <span>15m</span>
+                <span>0m</span>
+              </div>
+              <div class="chart-plot" id="responseChart" role="img" aria-label="Response time by day">
+                <div class="grid-line grid-1"></div>
+                <div class="grid-line grid-2"></div>
+                <div class="grid-line grid-3"></div>
+                <div class="grid-line grid-4"></div>
+                <svg class="line-chart" viewBox="0 0 700 240" preserveAspectRatio="none" aria-hidden="true">
+                  <path class="area-path" id="areaPath" d="" />
+                  <path class="baseline-path" id="baselinePath" d="" />
+                  <path class="data-path" id="dataPath" d="" />
+                  <g id="dataPoints"></g>
+                </svg>
+                <div class="chart-labels" id="chartLabels"></div>
+                <div class="chart-tooltip" id="chartTooltip" hidden></div>
+              </div>
+            </div>
+
+            <div class="insight-strip">
+              <span class="insight-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 18h6M10 22h4M8.5 14.5A6 6 0 1 1 15.5 14.5C14.5 15.3 14 16.1 14 17h-4c0-.9-.5-1.7-1.5-2.5Z" />
+                </svg>
+              </span>
+              <div>
+                <strong>Your replies are getting quicker</strong>
+                <span>You’re responding 7 minutes faster on average than you did in May.</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel contacts-panel" id="contacts">
+            <div class="panel-header contacts-heading">
+              <div>
+                <span class="section-kicker">YOUR PEOPLE</span>
+                <h2>Response leaderboard</h2>
+              </div>
+              <button class="text-button" type="button" id="viewAllButton">View all</button>
+            </div>
+
+            <label class="search-box">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m16 16 5 5" />
+              </svg>
+              <span class="sr-only">Search contacts</span>
+              <input id="contactSearch" type="search" placeholder="Search contacts" autocomplete="off" />
+            </label>
+
+            <div class="contact-list" id="contactList"></div>
+
+            <div class="empty-state" id="emptyState" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m16 16 5 5" />
+              </svg>
+              <strong>No contacts found</strong>
+              <span>Try a different name.</span>
+            </div>
+          </article>
+        </section>
+
+        <section class="rhythm-section">
+          <div class="rhythm-copy">
+            <span class="section-kicker">WEEKLY RHYTHM</span>
+            <h2>Wednesday is your<br /><em>conversation day.</em></h2>
+            <p>
+              You exchange 42% more messages midweek, and your contacts reply nearly
+              twice as fast after 5 PM.
+            </p>
+            <div class="privacy-note">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="5" y="10" width="14" height="10" rx="2" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+              </svg>
+              <span><strong>Private by design.</strong> Your message content never leaves this device.</span>
+            </div>
+          </div>
+
+          <div class="heatmap-card">
+            <div class="heatmap-header">
+              <div>
+                <strong>Message activity</strong>
+                <span>Average conversations by hour</span>
+              </div>
+              <div class="heatmap-key"><span>Less</span><i></i><i></i><i></i><i></i><span>More</span></div>
+            </div>
+            <div class="heatmap" id="heatmap" aria-label="Message activity heatmap"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <a class="brand footer-brand" href="#">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M5.5 5.5h13v9h-7l-4.75 4v-4H5.5z" /><path d="M9 9.25h6M9 12h3.5" /></svg>
+          </span>
+          <span>Replywise</span>
+        </a>
+        <p>Better timing. Better conversations.</p>
+        <div class="footer-links">
+          <a href="#">Privacy</a>
+          <a href="#">Data controls</a>
+          <a href="#">Help</a>
+        </div>
+      </footer>
+    </div>
+
+    <div class="modal-backdrop" id="importModal" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="importTitle">
+        <button class="modal-close" type="button" id="closeImport" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+        </button>
+        <span class="modal-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5.5 5.5h13v9h-7l-4.75 4v-4H5.5z" />
+            <path d="M9 9.25h6M9 12h3.5" />
+          </svg>
+        </span>
+        <span class="section-kicker">GET STARTED</span>
+        <h2 id="importTitle">Bring in your messages</h2>
+        <p>
+          Choose an export from your messaging app. Replywise analyzes timestamps
+          locally — never the content of your conversations.
+        </p>
+        <label class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept=".zip,.json,.txt,.csv" />
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 16V4M7 9l5-5 5 5M5 20h14" />
+          </svg>
+          <strong>Drop an export here</strong>
+          <span>or click to choose a file</span>
+          <small>ZIP, JSON, TXT or CSV · up to 100 MB</small>
+        </label>
+        <button class="demo-button" type="button" id="demoImport">Use demo data instead</button>
+      </section>
+    </div>
+
+    <aside class="contact-drawer" id="contactDrawer" aria-hidden="true" inert>
+      <button class="drawer-close" type="button" id="closeDrawer" aria-label="Close contact details">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+      </button>
+      <div id="drawerContent"></div>
+    </aside>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg>
+      <span id="toastMessage">Demo data loaded.</span>
+    </div>
+  </body>
+</html>
