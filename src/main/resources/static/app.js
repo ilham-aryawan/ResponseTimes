@@ -1,4 +1,4 @@
-const contacts = [
+let contacts = [
   {
     name: "Maya Chen",
     initials: "MC",
@@ -92,7 +92,7 @@ const contacts = [
   }
 ];
 
-const chartPeriods = {
+let chartPeriods = {
   7: {
     values: [21, 30, 18, 26, 15, 32, 24],
     baseline: [34, 38, 27, 31, 25, 40, 36],
@@ -113,7 +113,7 @@ const chartPeriods = {
   }
 };
 
-const heatmapData = [
+let heatmapData = [
   [0, 0, 1, 1, 2, 3, 4, 2],
   [0, 1, 1, 2, 2, 3, 4, 3],
   [0, 1, 2, 2, 3, 4, 5, 4],
@@ -123,8 +123,8 @@ const heatmapData = [
   [0, 0, 1, 2, 2, 3, 4, 3]
 ];
 
-const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const hours = ["8a", "10a", "12p", "2p", "4p", "6p", "8p", "10p"];
+let days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+let hours = ["8a", "10a", "12p", "2p", "4p", "6p", "8p", "10p"];
 
 const contactList = document.querySelector("#contactList");
 const emptyState = document.querySelector("#emptyState");
@@ -135,20 +135,55 @@ const importModal = document.querySelector("#importModal");
 const toast = document.querySelector("#toast");
 let toastTimer;
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function splitDurationLabel(label) {
+  const [value, unit = ""] = String(label).split(" ");
+  return { value, unit };
+}
+
+function activePeriod() {
+  return Number(document.querySelector("#periodControl button.active")?.dataset.period || 30);
+}
+
+function renderSummary(summary) {
+  if (!summary) return;
+
+  const median = splitDurationLabel(summary.medianResponseTime);
+  document.querySelector("#medianStat").innerHTML = `${escapeHtml(median.value)} <span>${escapeHtml(median.unit)}</span>`;
+  document.querySelector("#medianTrend").lastChild.textContent = ` ${summary.medianTrend}`;
+  document.querySelector("#conversationStat").textContent = summary.conversationCount;
+  document.querySelector("#conversationDetail").textContent = summary.conversationDetail;
+  document.querySelector("#fastestName").textContent = summary.fastestName;
+  document.querySelector("#fastestDetail").textContent = summary.fastestDetail;
+
+  const bestTime = splitDurationLabel(summary.bestTime);
+  document.querySelector("#bestTimeStat").innerHTML = `${escapeHtml(bestTime.value)} <span>${escapeHtml(bestTime.unit)}</span>`;
+  document.querySelector("#bestTimeDetail").textContent = summary.bestTimeDetail;
+}
+
 function renderContacts(list = contacts) {
   contactList.innerHTML = list.map((contact) => {
-    const originalRank = contacts.findIndex((item) => item.name === contact.name) + 1;
+    const originalRank = contacts.findIndex((item) => item.id === contact.id || item.name === contact.name) + 1;
+    const contactKey = contact.id || contact.name;
     return `
-      <button class="contact-row" type="button" data-contact="${contact.name}" aria-label="View ${contact.name}'s response details">
+      <button class="contact-row" type="button" data-contact="${escapeHtml(contactKey)}" aria-label="View ${escapeHtml(contact.name)}'s response details">
         <span class="contact-rank">${String(originalRank).padStart(2, "0")}</span>
-        <span class="avatar ${contact.avatar}">${contact.initials}</span>
+        <span class="avatar ${escapeHtml(contact.avatar)}">${escapeHtml(contact.initials)}</span>
         <span class="contact-meta">
-          <strong>${contact.name}</strong>
-          <span>${contact.handle}</span>
+          <strong>${escapeHtml(contact.name)}</strong>
+          <span>${escapeHtml(contact.handle)}</span>
         </span>
         <span class="response-time">
-          <strong>${contact.time}</strong>
-          <span>${contact.unit} median</span>
+          <strong>${escapeHtml(contact.time)}</strong>
+          <span>${escapeHtml(contact.unit)} median</span>
         </span>
         <svg class="contact-arrow" viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 6 6-6 6" /></svg>
       </button>
@@ -158,33 +193,33 @@ function renderContacts(list = contacts) {
   emptyState.hidden = list.length > 0;
 }
 
-function openContact(contactName) {
-  const contact = contacts.find((item) => item.name === contactName);
+function openContact(contactKey) {
+  const contact = contacts.find((item) => item.id === contactKey || item.name === contactKey);
   if (!contact) return;
 
   drawerContent.innerHTML = `
     <div class="drawer-content">
-      <span class="avatar drawer-avatar ${contact.avatar}">${contact.initials}</span>
+      <span class="avatar drawer-avatar ${escapeHtml(contact.avatar)}">${escapeHtml(contact.initials)}</span>
       <span class="section-kicker">CONTACT DETAILS</span>
-      <h2>${contact.name}</h2>
-      <p>${contact.handle}</p>
+      <h2>${escapeHtml(contact.name)}</h2>
+      <p>${escapeHtml(contact.handle)}</p>
 
       <div class="drawer-highlight">
         <span>Median response time</span>
-        <strong>${contact.time} ${contact.unit}</strong>
+        <strong>${escapeHtml(contact.time)} ${escapeHtml(contact.unit)}</strong>
         <small>Based on the last 90 days</small>
       </div>
 
       <div class="drawer-grid">
-        <div class="drawer-stat"><span>Response rate</span><strong>${contact.responseRate}</strong></div>
-        <div class="drawer-stat"><span>Best time</span><strong>${contact.bestTime}</strong></div>
-        <div class="drawer-stat"><span>Conversations</span><strong>${contact.conversations}</strong></div>
-        <div class="drawer-stat"><span>Current streak</span><strong>${contact.streak}</strong></div>
+        <div class="drawer-stat"><span>Response rate</span><strong>${escapeHtml(contact.responseRate)}</strong></div>
+        <div class="drawer-stat"><span>Best time</span><strong>${escapeHtml(contact.bestTime)}</strong></div>
+        <div class="drawer-stat"><span>Conversations</span><strong>${escapeHtml(contact.conversations)}</strong></div>
+        <div class="drawer-stat"><span>Current streak</span><strong>${escapeHtml(contact.streak)}</strong></div>
       </div>
 
       <div class="drawer-insight">
         <strong>Timing insight</strong>
-        ${contact.insight}
+        ${escapeHtml(contact.insight)}
       </div>
     </div>
   `;
@@ -211,21 +246,24 @@ function getPath(values, width = 700, height = 240, max = 60) {
 
 function renderChart(period = 30) {
   const data = chartPeriods[period];
-  const linePath = getPath(data.values);
+  if (!data) return;
+
+  const chartMax = Math.max(60, ...data.values, ...data.baseline);
+  const linePath = getPath(data.values, 700, 240, chartMax);
   const areaPath = `${linePath} L 700 240 L 0 240 Z`;
   document.querySelector("#dataPath").setAttribute("d", linePath);
   document.querySelector("#areaPath").setAttribute("d", areaPath);
-  document.querySelector("#baselinePath").setAttribute("d", getPath(data.baseline));
+  document.querySelector("#baselinePath").setAttribute("d", getPath(data.baseline, 700, 240, chartMax));
   document.querySelector("#chartMedian").textContent = data.median;
 
   document.querySelector("#dataPoints").innerHTML = data.values.map((value, index) => {
     const x = (index / (data.values.length - 1)) * 700;
-    const y = 240 - (value / 60) * 240;
+    const y = 240 - (value / chartMax) * 240;
     return `<circle class="data-point" data-index="${index}" cx="${x}" cy="${y}" r="4" />`;
   }).join("");
 
   document.querySelector("#chartLabels").innerHTML = data.labels
-    .map((label) => `<span>${label}</span>`)
+    .map((label) => `<span>${escapeHtml(label)}</span>`)
     .join("");
 
   const tooltip = document.querySelector("#chartTooltip");
@@ -281,17 +319,135 @@ function closeImportModal() {
   document.body.classList.remove("modal-open");
 }
 
+async function loadDashboard({ silent = false } = {}) {
+  try {
+    const response = await fetch("/api/dashboard", {
+      headers: { Accept: "application/json" }
+    });
+    if (!response.ok) {
+      throw new Error(`Dashboard API returned ${response.status}`);
+    }
+
+    const data = await response.json();
+    contacts = data.contacts || contacts;
+    chartPeriods = data.activity?.chartPeriods || chartPeriods;
+    heatmapData = data.activity?.heatmap?.values || heatmapData;
+    days = data.activity?.heatmap?.days || days;
+    hours = data.activity?.heatmap?.hours || hours;
+
+    renderSummary(data.summary);
+    renderContacts(filteredContacts());
+    renderChart(activePeriod());
+    renderHeatmap();
+  } catch (error) {
+    console.warn(error);
+    if (!silent) {
+      showToast("Using local demo data. Start Spring Boot for live APIs.");
+    }
+  }
+}
+
+function filteredContacts() {
+  const query = searchInput.value.trim().toLowerCase();
+  return contacts.filter((contact) =>
+    `${contact.name} ${contact.handle}`.toLowerCase().includes(query)
+  );
+}
+
+async function uploadFile(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  closeImportModal();
+  showToast(`Importing ${file.name} locally...`);
+
+  try {
+    const response = await fetch("/api/import", {
+      method: "POST",
+      body: formData
+    });
+    if (!response.ok) {
+      throw new Error(`Import failed with ${response.status}`);
+    }
+    const result = await response.json();
+    await loadDashboard({ silent: true });
+    showToast(result.message);
+  } catch (error) {
+    console.warn(error);
+    showToast(`${file.name} selected. Start Spring Boot to analyze it.`);
+  }
+}
+
+async function loadDemoData() {
+  closeImportModal();
+  try {
+    const response = await fetch("/api/import/demo", { method: "POST" });
+    if (!response.ok) {
+      throw new Error(`Demo import failed with ${response.status}`);
+    }
+    const result = await response.json();
+    await loadDashboard({ silent: true });
+    showToast(result.message);
+  } catch (error) {
+    console.warn(error);
+    renderContacts();
+    renderChart(activePeriod());
+    renderHeatmap();
+    showToast("Demo data loaded locally.");
+  }
+}
+
+async function importFromImessage() {
+  closeImportModal();
+  showToast("Reading Messages locally...");
+
+  try {
+    const response = await fetch("/api/import/imessage", { method: "POST" });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || `iMessage import failed with ${response.status}`);
+    }
+    await loadDashboard({ silent: true });
+    showToast(result.message);
+  } catch (error) {
+    console.warn(error);
+    showToast(error.message || "Could not read iMessage. Check Full Disk Access and restart Spring Boot.");
+  }
+}
+
+async function downloadImessageCsv() {
+  showToast("Preparing timing CSV locally...");
+
+  try {
+    const response = await fetch("/api/export/imessage.csv");
+    if (!response.ok) {
+      const result = await response.json();
+      throw new Error(result.message || `CSV export failed with ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "replywise-imessage-timing.csv";
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    showToast("Timing CSV downloaded.");
+  } catch (error) {
+    console.warn(error);
+    showToast(error.message || "Could not export iMessage CSV. Check Full Disk Access.");
+  }
+}
+
 renderContacts();
 renderChart();
 renderHeatmap();
+loadDashboard({ silent: true });
 
 searchInput.addEventListener("input", (event) => {
-  const query = event.target.value.trim().toLowerCase();
-  renderContacts(
-    contacts.filter((contact) =>
-      `${contact.name} ${contact.handle}`.toLowerCase().includes(query)
-    )
-  );
+  renderContacts(filteredContacts());
 });
 
 contactList.addEventListener("click", (event) => {
@@ -315,10 +471,9 @@ document.querySelector("#periodControl").addEventListener("click", (event) => {
 
 document.querySelector("#openImport").addEventListener("click", openImportModal);
 document.querySelector("#closeImport").addEventListener("click", closeImportModal);
-document.querySelector("#demoImport").addEventListener("click", () => {
-  closeImportModal();
-  showToast("Demo data loaded. Your dashboard is ready.");
-});
+document.querySelector("#demoImport").addEventListener("click", loadDemoData);
+document.querySelector("#imessageImport").addEventListener("click", importFromImessage);
+document.querySelector("#imessageCsv").addEventListener("click", downloadImessageCsv);
 
 importModal.addEventListener("click", (event) => {
   if (event.target === importModal) closeImportModal();
@@ -342,16 +497,14 @@ const dropZone = document.querySelector("#dropZone");
 dropZone.addEventListener("drop", (event) => {
   const file = event.dataTransfer.files[0];
   if (file) {
-    closeImportModal();
-    showToast(`${file.name} selected. Analysis is ready to begin.`);
+    uploadFile(file);
   }
 });
 
 document.querySelector("#fileInput").addEventListener("change", (event) => {
   const file = event.target.files[0];
   if (file) {
-    closeImportModal();
-    showToast(`${file.name} selected. Analysis is ready to begin.`);
+    uploadFile(file);
   }
 });
 

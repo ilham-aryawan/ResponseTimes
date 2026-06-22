@@ -80,7 +80,7 @@
                   <path d="M12 7v5l3 2" />
                 </svg>
               </span>
-              <span class="trend trend-good">
+              <span class="trend trend-good" id="medianTrend">
                 <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 10 4-4 3 3 3-4" /></svg>
                 18%
               </span>
@@ -101,7 +101,7 @@
             </div>
             <p>Conversations analyzed</p>
             <h2 id="conversationStat">1,284</h2>
-            <small>Across 42 active contacts</small>
+            <small id="conversationDetail">Across 42 active contacts</small>
           </article>
 
           <article class="stat-card">
@@ -117,8 +117,8 @@
             <div class="person-stat">
               <span class="avatar avatar-maya">MC</span>
               <div>
-                <h2>Maya</h2>
-                <small>4 min median reply</small>
+                <h2 id="fastestName">Maya</h2>
+                <small id="fastestDetail">4 min median reply</small>
               </div>
             </div>
           </article>
@@ -134,8 +134,8 @@
               <span class="trend">Based on history</span>
             </div>
             <p>Best time to message</p>
-            <h2>6:30 <span>PM</span></h2>
-            <small>Replies are 31% quicker in the evening</small>
+            <h2 id="bestTimeStat">6:30 <span>PM</span></h2>
+            <small id="bestTimeDetail">Replies are 31% quicker in the evening</small>
           </article>
         </section>
 
@@ -296,6 +296,14 @@
           Choose an export from your messaging app. Replywise analyzes timestamps
           locally — never the content of your conversations.
         </p>
+        <div class="imessage-import-card">
+          <strong>Use Messages on this Mac</strong>
+          <span>Reads <code>~/Library/Messages/chat.db</code> locally and imports only contact, timestamp, and direction.</span>
+          <div class="imessage-actions">
+            <button class="local-import-button" type="button" id="imessageImport">Import from iMessage</button>
+            <button class="csv-export-button" type="button" id="imessageCsv">Download timing CSV</button>
+          </div>
+        </div>
         <label class="drop-zone" id="dropZone">
           <input type="file" id="fileInput" accept=".zip,.json,.txt,.csv" />
           <svg viewBox="0 0 24 24" aria-hidden="true">
