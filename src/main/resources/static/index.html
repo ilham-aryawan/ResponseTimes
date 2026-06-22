@@ -293,25 +293,27 @@
         <span class="section-kicker">GET STARTED</span>
         <h2 id="importTitle">Bring in your messages</h2>
         <p>
-          Choose an export from your messaging app. Replywise analyzes timestamps
-          locally — never the content of your conversations.
+          Choose an export from your messaging app. Add a Contacts vCard to turn
+          phone numbers into names. Replywise analyzes timestamps locally — never
+          the content of your conversations.
         </p>
         <div class="imessage-import-card">
           <strong>Use Messages on this Mac</strong>
           <span>Reads <code>~/Library/Messages/chat.db</code> locally and imports only contact, timestamp, and direction.</span>
+          <span>If macOS blocks that path, choose <code>chat.db</code> with the file picker below. Upload a <code>.vcf</code> contact export to show names.</span>
           <div class="imessage-actions">
             <button class="local-import-button" type="button" id="imessageImport">Import from iMessage</button>
             <button class="csv-export-button" type="button" id="imessageCsv">Download timing CSV</button>
           </div>
         </div>
         <label class="drop-zone" id="dropZone">
-          <input type="file" id="fileInput" accept=".zip,.json,.txt,.csv" />
+          <input type="file" id="fileInput" accept=".vcf,.db,.sqlite,.sqlite3,.zip,.json,.txt,.csv" />
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 16V4M7 9l5-5 5 5M5 20h14" />
           </svg>
           <strong>Drop an export here</strong>
           <span>or click to choose a file</span>
-          <small>ZIP, JSON, TXT or CSV · up to 100 MB</small>
+          <small>VCF contacts, chat.db, SQLite, JSON, TXT or CSV · up to 2 GB</small>
         </label>
         <button class="demo-button" type="button" id="demoImport">Use demo data instead</button>
       </section>

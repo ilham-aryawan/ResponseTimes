@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class AnalyticsService {
     private static final ZoneId DISPLAY_ZONE = ZoneId.systemDefault();
 
     private final AtomicReference<DashboardData> dashboard = new AtomicReference<>(demoDashboard());
+    private final AtomicReference<List<RawMessage>> importedMessages = new AtomicReference<>(List.of());
 
     public DashboardData dashboard() {
         return dashboard.get();
@@ -64,6 +66,7 @@ public class AnalyticsService {
             );
         }
 
+        importedMessages.set(List.copyOf(messages));
         var nextContacts = analyzeContacts(messages);
         var nextDashboard = new DashboardData(
             summarize(nextContacts),
@@ -79,7 +82,31 @@ public class AnalyticsService {
         );
     }
 
+    public int relabelImportedMessages(UnaryOperator<String> labelResolver) {
+        var messages = importedMessages.get();
+        if (messages.isEmpty()) {
+            return 0;
+        }
+
+        var relabeled = messages.stream()
+            .map(message -> new RawMessage(
+                labelResolver.apply(message.contact()),
+                message.timestamp(),
+                message.fromMe()
+            ))
+            .toList();
+        var nextContacts = analyzeContacts(relabeled);
+        dashboard.set(new DashboardData(
+            summarize(nextContacts),
+            nextContacts,
+            dashboard.get().activity()
+        ));
+        importedMessages.set(relabeled);
+        return nextContacts.size();
+    }
+
     public void resetDemoData() {
+        importedMessages.set(List.of());
         dashboard.set(demoDashboard());
     }
 

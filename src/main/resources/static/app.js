@@ -367,14 +367,21 @@ async function uploadFile(file) {
       body: formData
     });
     if (!response.ok) {
-      throw new Error(`Import failed with ${response.status}`);
+      let message = `Import failed with ${response.status}`;
+      try {
+        const result = await response.json();
+        message = result.message || message;
+      } catch (jsonError) {
+        console.warn(jsonError);
+      }
+      throw new Error(message);
     }
     const result = await response.json();
     await loadDashboard({ silent: true });
     showToast(result.message);
   } catch (error) {
     console.warn(error);
-    showToast(`${file.name} selected. Start Spring Boot to analyze it.`);
+    showToast(error.message || `${file.name} selected. Start Spring Boot to analyze it.`);
   }
 }
 

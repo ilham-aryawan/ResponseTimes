@@ -21,7 +21,7 @@ The frontend is in `src/main/resources/static`, so Spring Boot serves the dashbo
 - `GET /api/contacts` returns the contact leaderboard
 - `GET /api/contacts/{id}` returns one contact drill-down
 - `GET /api/activity` returns chart and heatmap data
-- `POST /api/import` accepts a local CSV or JSON file upload
+- `POST /api/import` accepts a local CSV, JSON, vCard `.vcf`, or uploaded `chat.db` file
 - `POST /api/import/imessage` imports timing metadata from `~/Library/Messages/chat.db`
 - `GET /api/export/imessage.csv` downloads a privacy-safe CSV from `chat.db`
 - `POST /api/import/demo` reloads the demo dataset
@@ -41,6 +41,14 @@ mvn spring-boot:run
 
 5. Open `http://localhost:3000`, click **Import messages**, then choose **Import from iMessage**.
 
+If macOS will not let the app read `~/Library/Messages/chat.db` directly, click **Import messages** and use the file picker instead. Choose:
+
+```text
+/Users/your-name/Library/Messages/chat.db
+```
+
+In Finder's file picker, press `Command + Shift + G`, paste `~/Library/Messages`, and select `chat.db`.
+
 This reads `~/Library/Messages/chat.db` in read-only mode and keeps only:
 
 - Contact or conversation label
@@ -48,6 +56,19 @@ This reads `~/Library/Messages/chat.db` in read-only mode and keeps only:
 - Direction, either `sent` or `received`
 
 Message text and attachments are not imported.
+
+## Show Contact Names
+
+`chat.db` often stores phone numbers or email handles, not the names from your Contacts app. To show names:
+
+1. Open the macOS **Contacts** app.
+2. Select the contacts you want, or press `Command + A` for all contacts.
+3. Choose **File > Export > Export vCard...**.
+4. Save the `.vcf` file.
+5. In Replywise, click **Import messages** and upload the `.vcf` file.
+6. Import `chat.db` again, or upload the `.vcf` after `chat.db` to relabel the current dashboard.
+
+Replywise uses the vCard phone numbers and emails only to rename handles like `+15555550100` to contact names.
 
 ## Import Format
 
